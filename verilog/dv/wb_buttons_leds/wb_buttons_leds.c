@@ -16,14 +16,20 @@
  */
 
 // This include is relative to $CARAVEL_PATH (see Makefile)
-#include "verilog/dv/caravel/defs.h"
-#include "verilog/dv/caravel/stub.c"
+// #include "../verilog/dv/wb_buttons_leds/defs.h"
+// #include "stub.c"
 
 /*
 	IO Test:
 		- Configures MPRJ lower 8-IO pins as outputs
 		- Observes counter value through the MPRJ lower 8 IO pins (in the testbench)
 */
+
+// How to make include relative to $CARAVEL_PATH
+// #include "verilog/dv/caravel/defs.h"
+// #include "verilog/dv/caravel/stub.c"
+#include <stdint.h>
+#include <stdbool.h>
 
 #define reg_wb_leds      (*(volatile uint32_t*)0x30000000)
 #define reg_wb_buttons   (*(volatile uint32_t*)0x30000004)
@@ -50,8 +56,9 @@ void main()
 	/* Set up the housekeeping SPI to be connected internally so	*/
 	/* that external pin changes don't affect it.			*/
 
-	reg_spimaster_config = 0xa002;	// Enable, prescaler = 2,
+	// reg_spimaster_config = 0xa002;	// Enable, prescaler = 2,
                                         // connect to housekeeping SPI
+	(*(volatile uint32_t*)0x24000000) = 0xa002;
 
 	// Connect the housekeeping SPI to the SPI master
 	// so that the CSB line is not left floating.  This allows
@@ -59,22 +66,22 @@ void main()
 
 	// Configure lower 8-IOs as user output
 	// Observe counter value in the testbench
-	reg_mprj_io_7 =  GPIO_MODE_USER_STD_INPUT_NOPULL;
-	reg_mprj_io_8 =  GPIO_MODE_USER_STD_INPUT_NOPULL;
-	reg_mprj_io_9 =  GPIO_MODE_USER_STD_INPUT_NOPULL;
+	(*(volatile uint32_t*)0x26000040) =  0x0402;
+	(*(volatile uint32_t*)0x26000044) =  0x0402;
+	(*(volatile uint32_t*)0x26000048) =  0x0402;
 
-	reg_mprj_io_10 =  GPIO_MODE_USER_STD_OUTPUT;
-	reg_mprj_io_11 =  GPIO_MODE_USER_STD_OUTPUT;
-	reg_mprj_io_12 =  GPIO_MODE_USER_STD_OUTPUT;
-	reg_mprj_io_13 =  GPIO_MODE_USER_STD_OUTPUT;
-	reg_mprj_io_14 =  GPIO_MODE_USER_STD_OUTPUT;
-	reg_mprj_io_15 =  GPIO_MODE_USER_STD_OUTPUT;
-	reg_mprj_io_16 =  GPIO_MODE_USER_STD_OUTPUT;
-	reg_mprj_io_17 =  GPIO_MODE_USER_STD_OUTPUT;
+	(*(volatile uint32_t*)0x2600004c) =  0x1808;
+	(*(volatile uint32_t*)0x26000050) =  0x1808;
+	(*(volatile uint32_t*)0x26000054) =  0x1808;
+	(*(volatile uint32_t*)0x26000058) =  0x1808;
+	(*(volatile uint32_t*)0x2600005c) =  0x1808;
+	(*(volatile uint32_t*)0x26000060) =  0x1808;
+	(*(volatile uint32_t*)0x26000064) =  0x1808;
+	(*(volatile uint32_t*)0x26000068) =  0x1808;
 
 	/* Apply configuration */
-	reg_mprj_xfer = 1;
-	while (reg_mprj_xfer == 1);
+	(*(volatile uint32_t*)0x26000000) = 1;
+	while ((*(volatile uint32_t*)0x26000000) == 1);
 
     // wait for all 3 buttons to get pressed
     while (reg_wb_buttons != 7);

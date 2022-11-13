@@ -17,9 +17,9 @@
 
 `timescale 1 ns / 1 ps
 
-`include "uprj_netlists.v"
-`include "caravel_netlists.v"
-`include "spiflash.v"
+// `include "uprj_netlists.v"
+// `include "caravel_netlists.v"
+// `include "spiflash.v"
 
 module wb_buttons_leds_tb;
 	reg clock;
@@ -136,7 +136,7 @@ module wb_buttons_leds_tb;
 		.vssd2	  (VSS),
 		.clock	  (clock),
 		.gpio     (gpio),
-        	.mprj_io  (mprj_io),
+        .mprj_io  (mprj_io),
 		.flash_csb(flash_csb),
 		.flash_clk(flash_clk),
 		.flash_io0(flash_io0),
